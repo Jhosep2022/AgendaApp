@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "702957406924",
+    "firebase_url": "https://agendaapp-406e1-default-rtdb.firebaseio.com",
+    "project_id": "agendaapp-406e1",
+    "storage_bucket": "agendaapp-406e1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:702957406924:android:2ddac5a0568e2452f5d069",
+        "android_client_info": {
+          "package_name": "com.example.agenda_online"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCD8q6O46Eh7MTV1YpAc3-nHomRyESyLtI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
