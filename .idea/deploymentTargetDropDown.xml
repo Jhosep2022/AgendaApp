@@ -10,12 +10,12 @@
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\JOSE\.android\avd\Pixel_7_Pro_API_TiramisuPrivacySandbox.avd" />
+                  <value value="C:\Users\JOSE\.android\avd\flutter_emulator_2.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-07-15T23:00:30.636332100Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-07-17T16:16:25.604706500Z" />
         </State>
       </entry>
     </value>

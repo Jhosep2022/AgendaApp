@@ -82,6 +82,30 @@ public class MenuPrincipal extends AppCompatActivity {
             }
         });
 
+        BtnMisNotas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MenuPrincipal.this, VerNotas.class));
+            }
+        });
+
+        BtnImportantes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MenuPrincipal.this, VerTareasImportantes.class));
+            }
+        });
+
+        BtnAcercaDe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MenuPrincipal.this, AcercaDe.class));
+            }
+        });
+
+
+
+
         // Set onClickListeners for the other buttons here
     }
 
