@@ -103,10 +103,21 @@ public class MenuPrincipal extends AppCompatActivity {
             }
         });
 
+        BtnContactos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MenuPrincipal.this, Contactos.class));
+            }
+        });
 
+        NombresPrincipal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MenuPrincipal.this, PerfilUsuario.class));
+            }
+        });
 
-
-        // Set onClickListeners for the other buttons here
+        ComporbarInicioSesion();
     }
 
     @Override

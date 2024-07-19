@@ -38,6 +38,9 @@
     <string name="No_Verificado">No Verificado</string>
     <string name="Fecha_de_registro">Fecha de Registro</string>
     <string name="No_finalizado">No Finalizado</string>
+    <string name="select_gender_prompt">Seleccionar Género</string>
+    <string name="select_gender">Seleccionar Género</string>
+    <string name="avatar_image"> Image </string>
 
 
 </resources>
