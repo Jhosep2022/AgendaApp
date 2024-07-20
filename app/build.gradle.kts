@@ -38,15 +38,16 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.lottie)
-    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
-    implementation("com.google.firebase:firebase-database:21.0.0")
-    implementation("com.google.firebase:firebase-auth:21.0.1")
-    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2")) // la plataforma
+    implementation("com.google.firebase:firebase-database:21.0.0") // base de datos
+    implementation("com.google.firebase:firebase-auth:21.0.1") // logearse
+    implementation("com.google.firebase:firebase-analytics-ktx") // analisis de los usuario
     implementation("com.google.firebase:firebase-storage:20.0.1") // Añadir esta línea para Firebase Storage
-    implementation("com.github.bumptech.glide:glide:4.12.0") // Añadir esta línea para Glide
+    implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0") // Añadir esta línea para Glide
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }
+

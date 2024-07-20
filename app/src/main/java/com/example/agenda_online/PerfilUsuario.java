@@ -1,7 +1,9 @@
 package com.example.agenda_online;
 
+import android.Manifest;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,6 +16,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,16 +30,17 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
 
 public class PerfilUsuario extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int TAKE_PHOTO_REQUEST = 2;
+    private static final int CAMERA_PERMISSION_REQUEST = 100;
 
     private ImageView avatarImageView;
     private TextView correoTextView, nombreTextView, apellidosTextView, edadTextView, domicilioTextView, universidadTextView, profesionTextView, telefonoTextView;
-    private Button btnCambiarFoto;
+    private Button btnCambiarFoto, btnTomarFoto;
     private Uri imageUri;
 
     private FirebaseAuth firebaseAuth;
@@ -56,7 +61,14 @@ public class PerfilUsuario extends AppCompatActivity {
         avatarImageView = findViewById(R.id.avatarImageView);
         correoTextView = findViewById(R.id.correoTextView);
         nombreTextView = findViewById(R.id.nombreTextView);
+        apellidosTextView = findViewById(R.id.apellidosTextView);
+        edadTextView = findViewById(R.id.edadTextView);
+        domicilioTextView = findViewById(R.id.domicilioTextView);
+        universidadTextView = findViewById(R.id.universidadTextView);
+        profesionTextView = findViewById(R.id.profesionTextView);
+        telefonoTextView = findViewById(R.id.telefonoTextView);
         btnCambiarFoto = findViewById(R.id.btnCambiarFoto);
+        btnTomarFoto = findViewById(R.id.btnTomarFoto);
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
@@ -69,6 +81,13 @@ public class PerfilUsuario extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 seleccionarImagen();
+            }
+        });
+
+        btnTomarFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tomarFoto();
             }
         });
     }
@@ -122,25 +141,65 @@ public class PerfilUsuario extends AppCompatActivity {
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            imageUri = data.getData();
-            avatarImageView.setImageURI(imageUri);
-            subirImagen();
+    private void tomarFoto() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST);
+        } else {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(takePictureIntent, TAKE_PHOTO_REQUEST);
+            }
         }
     }
 
-    private void subirImagen() {
-        if (imageUri != null) {
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                tomarFoto();
+            } else {
+                Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && data != null) {
+            if (requestCode == PICK_IMAGE_REQUEST && data.getData() != null) {
+                imageUri = data.getData();
+                avatarImageView.setImageURI(imageUri);
+                subirImagen(imageUri);
+            } else if (requestCode == TAKE_PHOTO_REQUEST && data.getExtras() != null) {
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                avatarImageView.setImageBitmap(photo);
+                Uri tempUri = getImageUri(photo);
+                subirImagen(tempUri);
+            }
+        }
+    }
+
+    private Uri getImageUri(Bitmap bitmap) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "Title", null);
+        return Uri.parse(path);
+    }
+
+    private void subirImagen(Uri uri) {
+        if (uri != null) {
             StorageReference fileReference = storageReference.child(firebaseUser.getUid() + ".jpg");
-            fileReference.putFile(imageUri).addOnSuccessListener(taskSnapshot -> fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
-                usuariosReference.child(firebaseUser.getUid()).child("imagenUrl").setValue(uri.toString());
-                Toast.makeText(PerfilUsuario.this, "Imagen actualizada exitosamente", Toast.LENGTH_SHORT).show();
-            })).addOnFailureListener(e -> {
-                Toast.makeText(PerfilUsuario.this, "Error al subir la imagen", Toast.LENGTH_SHORT).show();
-            });
+            fileReference.putFile(uri)
+                    .addOnSuccessListener(taskSnapshot -> fileReference.getDownloadUrl()
+                            .addOnSuccessListener(downloadUri -> {
+                                usuariosReference.child(firebaseUser.getUid()).child("imagenUrl").setValue(downloadUri.toString());
+                                Toast.makeText(PerfilUsuario.this, "Imagen actualizada exitosamente", Toast.LENGTH_SHORT).show();
+                            }))
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(PerfilUsuario.this, "Error al subir la imagen", Toast.LENGTH_SHORT).show();
+                    });
         }
     }
 }

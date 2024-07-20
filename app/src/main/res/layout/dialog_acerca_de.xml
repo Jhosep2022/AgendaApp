@@ -16,14 +16,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Desarrollado por: Marco Barón Effio"
+        android:text="Desarrollado por: JHON MAX ESPAÑA HUARACA"
         android:textSize="18sp"
         android:layout_marginTop="8dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Soporte: marco@gmail.com"
+        android:text="Soporte: espanahuaracajhoncito@gmail.com"
         android:textSize="16sp"
         android:layout_marginTop="4dp" />
 
